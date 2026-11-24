@@ -1,8 +1,9 @@
-import { getGridDiv, anticipateOneMutation, tryAutoStartGame, waitForAnyGrid } from '../util.js';
+import { getGridDiv, anticipateOneMutation, tryAutoStartGame, waitForAnyGrid, runStrategies } from '../util.js';
 import { learnMarkStrategy } from './markStrategy.js';
 import { solveTango } from './solver.js';
+import { TangoDomApiV2, TANGO_BOARD_SELECTORS } from './board2026.js';
 
-const TANGO_GRID_SELECTORS = ['[data-testid="interactive-grid"]', '.lotka-grid'];
+const TANGO_GRID_SELECTORS = [...TANGO_BOARD_SELECTORS, '[id^="tango-cell-"]', '[data-cell-idx]'];
 
 export async function autoSolve(options = {}) {
   const { speedMode = 'turbo', autoStart = true } = options;
@@ -12,31 +13,7 @@ export async function autoSolve(options = {}) {
       await waitForAnyGrid(TANGO_GRID_SELECTORS, 4500);
     }
   }
-
-  const t0 = performance.now();
-  const prioritizedApis = [new TangoDomApiV1(), new TangoDomApiV0()];
-  let lastError = null;
-  for (let i = 0; i < prioritizedApis.length; i++) {
-    const api = prioritizedApis[i];
-    try {
-      const moves = await api.autoSolve(speedMode);
-      return {
-        success: true,
-        durationMs: Math.max(1, Math.round(performance.now() - t0)),
-        moves,
-        api: api.constructor.name,
-      };
-    } catch (e) {
-      lastError = e;
-      console.error(e);
-      if (i + 1 !== prioritizedApis.length) {
-        console.info('Will reattempt autoSolve() via a prior API');
-      } else {
-        console.error('All APIs exhausted');
-      }
-    }
-  }
-  throw lastError || new Error('Impossible de résoudre Tango sur cette page');
+  return runStrategies([new TangoDomApiV2(), new TangoDomApiV1(), new TangoDomApiV0()], speedMode, 'Tango');
 }
 
 class TangoDomApiV1 {

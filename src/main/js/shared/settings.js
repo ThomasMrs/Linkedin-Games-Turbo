@@ -44,6 +44,36 @@ export const GAMES = [
       url.includes('linkedin.com/games/mini-sudo') ||
       url.includes('linkedin.com/games/minisudo'),
   },
+  {
+    id: 'patches',
+    name: 'Patches',
+    shortName: 'Patches',
+    emoji: '🧩',
+    color: '#F472B6',
+    url: 'https://www.linkedin.com/games/patches/',
+    legacyFn: 'patchesPopupButtonOnClick',
+    matches: (url) => url.includes('linkedin.com/games/patches'),
+  },
+  {
+    id: 'wend',
+    name: 'Wend',
+    shortName: 'Wend',
+    emoji: '🔤',
+    color: '#EAB308',
+    url: 'https://www.linkedin.com/games/wend/',
+    legacyFn: 'wendPopupButtonOnClick',
+    matches: (url) => url.includes('linkedin.com/games/wend'),
+  },
+  {
+    id: 'sumbreak',
+    name: 'Sumbreak',
+    shortName: 'Sumbreak',
+    emoji: '🧮',
+    color: '#8B5CF6',
+    url: 'https://www.linkedin.com/games/sumbreak/',
+    legacyFn: 'sumbreakPopupButtonOnClick',
+    matches: (url) => url.includes('linkedin.com/games/sumbreak'),
+  },
 ];
 
 export function detectGameFromUrl(url = '') {

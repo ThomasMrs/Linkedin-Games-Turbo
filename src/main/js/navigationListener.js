@@ -8,6 +8,9 @@ const gameScriptMap = [
   { prefix: '/games/sudoku', script: 'sudoku.js', badge: 'S', color: '#10B981' },
   { prefix: '/games/mini-sudoku', script: 'sudoku.js', badge: 'S', color: '#10B981' },
   { prefix: '/games/minisudoku', script: 'sudoku.js', badge: 'S', color: '#10B981' },
+  { prefix: '/games/patches', script: 'patches.js', badge: 'P', color: '#F472B6' },
+  { prefix: '/games/wend', script: 'wend.js', badge: 'W', color: '#EAB308' },
+  { prefix: '/games/sumbreak', script: 'sumbreak.js', badge: 'SB', color: '#8B5CF6' },
 ];
 
 function matchGame(url) {
@@ -39,6 +42,11 @@ polyfilledBrowser.webNavigation.onHistoryStateUpdated.addListener(({ tabId, url 
   const match = matchGame(url);
   updateBadge(tabId, match);
   if (match) {
+    polyfilledBrowser.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      files: ['pageReader.js'],
+      world: 'MAIN',
+    }).catch((err) => console.warn('[LG Turbo] Page reader injection failed:', err));
     polyfilledBrowser.scripting.executeScript({
       target: { tabId },
       files: [match.script],

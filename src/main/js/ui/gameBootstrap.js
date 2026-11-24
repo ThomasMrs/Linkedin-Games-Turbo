@@ -71,7 +71,7 @@ class GameController {
 
     window.addEventListener('keydown', (e) => {
       if (!this.#settings?.shortcutEnabled) return;
-      if (e.altKey && !e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 's') {
+      if (e.altKey && !e.ctrlKey && !e.metaKey && (e.code === 'KeyS' || (e.key || '').toLowerCase() === 's')) {
         e.preventDefault();
         this.triggerSolve();
       }

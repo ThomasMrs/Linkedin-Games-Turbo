@@ -15,6 +15,9 @@ const GAME_SCRIPT_FILES = {
   tango: 'tango.js',
   zip: 'zip.js',
   sudoku: 'sudoku.js',
+  patches: 'patches.js',
+  wend: 'wend.js',
+  sumbreak: 'sumbreak.js',
 };
 
 let activeTab = null;
@@ -137,7 +140,7 @@ function renderHero() {
     els.heroMeta.textContent = 'Ouvre un jeu ci-dessous pour le résoudre en 1 clic';
     els.heroBadge.textContent = 'Hors jeu';
     els.heroBadge.className = 'status-badge';
-    els.statusSubtitle.textContent = 'Queens • Tango • Zip • Sudoku';
+    els.statusSubtitle.textContent = '7 jeux LinkedIn';
 
     els.mainBtn.disabled = false;
     const nextGame = getNextUnsolvedGame();
@@ -228,6 +231,15 @@ async function ensureContentScriptInjected(tabId, gameId) {
     if (ping?.ok) return;
   } catch (_e) {
     // Not injected yet
+  }
+  try {
+    await polyfilledBrowser.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      files: ['pageReader.js'],
+      world: 'MAIN',
+    });
+  } catch (_e) {
+    console.warn('[LG Turbo] Page reader injection failed');
   }
   const scriptFile = GAME_SCRIPT_FILES[gameId];
   if (scriptFile) {

@@ -1,7 +1,8 @@
-import { getGridDiv, anticipateOneMutation, tryAutoStartGame, waitForAnyGrid } from '../util.js';
+import { getGridDiv, anticipateOneMutation, tryAutoStartGame, waitForAnyGrid, runStrategies } from '../util.js';
 import { solveQueens } from './solver.js';
+import { QueensDomApiV2, QUEENS_BOARD_SELECTORS } from './board2026.js';
 
-const QUEENS_GRID_SELECTORS = ['[data-testid="interactive-grid"]', '#queens-grid'];
+const QUEENS_GRID_SELECTORS = [...QUEENS_BOARD_SELECTORS, '[data-cell-idx]'];
 
 export async function autoSolve(options = {}) {
   const { speedMode = 'turbo', autoStart = true } = options;
@@ -11,31 +12,7 @@ export async function autoSolve(options = {}) {
       await waitForAnyGrid(QUEENS_GRID_SELECTORS, 4500);
     }
   }
-
-  const t0 = performance.now();
-  const prioritizedApis = [new QueensDomApiV1(), new QueensDomApiV0()];
-  let lastError = null;
-  for (let i = 0; i < prioritizedApis.length; i++) {
-    const api = prioritizedApis[i];
-    try {
-      const moves = await api.autoSolve(speedMode);
-      return {
-        success: true,
-        durationMs: Math.max(1, Math.round(performance.now() - t0)),
-        moves,
-        api: api.constructor.name,
-      };
-    } catch (e) {
-      lastError = e;
-      console.error(e);
-      if (i + 1 !== prioritizedApis.length) {
-        console.info('Will reattempt autoSolve() via a prior API');
-      } else {
-        console.error('All APIs exhausted');
-      }
-    }
-  }
-  throw lastError || new Error('Impossible de résoudre Queens sur cette page');
+  return runStrategies([new QueensDomApiV2(), new QueensDomApiV1(), new QueensDomApiV0()], speedMode, 'Queens');
 }
 
 function parseQueensMark(cellDiv) {

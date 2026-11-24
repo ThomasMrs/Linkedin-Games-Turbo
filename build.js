@@ -29,7 +29,13 @@ const sharedOutputFiles = [
   'zip.js',
   'tango.js',
   'sudoku.js',
+  'patches.js',
+  'wend.js',
+  'sumbreak.js',
+  'SCOWL-NOTICE.txt',
+  'LICENSE',
   'navigationListener.js',
+  'pageReader.js',
 ];
 
 const scriptsToBuild = [
@@ -37,8 +43,12 @@ const scriptsToBuild = [
   { entry: 'src/main/js/zip/zip.js', out: `${distDir}/zip.js` },
   { entry: 'src/main/js/tango/tango.js', out: `${distDir}/tango.js` },
   { entry: 'src/main/js/sudoku/sudoku.js', out: `${distDir}/sudoku.js` },
+  { entry: 'src/main/js/patches/patches.js', out: `${distDir}/patches.js` },
+  { entry: 'src/main/js/wend/wend.js', out: `${distDir}/wend.js` },
+  { entry: 'src/main/js/sumbreak/sumbreak.js', out: `${distDir}/sumbreak.js` },
   { entry: 'src/main/js/navigationListener.js', out: `${distDir}/navigationListener.js` },
   { entry: 'src/main/js/popup.js', out: `${distDir}/popup.js` },
+  { entry: 'src/main/js/pageReader.js', out: `${distDir}/pageReader.js` },
 ];
 
 async function runBuilds() {
@@ -54,6 +64,7 @@ async function runBuilds() {
           bundle: true,
           minify: isMinify,
           format: 'iife',
+          loader: { '.txt': 'text' },
           outfile: out,
         })
       )
@@ -65,6 +76,8 @@ async function runBuilds() {
       await promises.copyFile(join(metaSrc, iconPngName), join(distDir, iconPngName));
     }
     await promises.copyFile(join(metaSrc, 'icon.svg'), `${distDir}/icon.svg`);
+    await promises.copyFile('src/assets/wend/SCOWL-NOTICE.txt', `${distDir}/SCOWL-NOTICE.txt`);
+    await promises.copyFile('LICENSE', `${distDir}/LICENSE`);
 
     await promises.copyFile(join(metaSrc, 'manifest-chrome.json'), join(chromeDist, 'manifest.json'));
     await promises.copyFile(join(metaSrc, 'manifest-firefox.json'), join(firefoxDist, 'manifest.json'));

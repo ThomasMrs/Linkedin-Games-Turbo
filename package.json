@@ -1,4 +1,9 @@
 {
+  "name": "linkedin-games-turbo",
+  "version": "2.2.0",
+  "description": "Extension Chrome & Firefox qui résout les 7 jeux quotidiens LinkedIn.",
+  "author": "Thomas Marsa",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
